@@ -16,26 +16,28 @@ cursor = connection.cursor()
 
 @app.route('/api', methods=['POST'])
 def router():
+    data_json = request.json
     try:
-        data = request.json
-        method = data['method']
-        type = data['type']
+        method = data_json['method']
     except:
         return jsonify({"error": "Invalid request body was passed"}), 609
+    try:
+        data= data_json['data',{}]
+    except:
+        return jsonify({"error": "Invalid request body was passed"}), 609
+    
 
-    if type == 'condition':
-        if method == 'create':
-            return simple_create(data)
-        elif method == 'delete':
-            return simple_delete(data)
-    elif type == 'accident':
-        if method == 'create':
-            return accident_create(data)
-        elif method == 'delete':
-            return accident_delete(data)
-
-
-    return jsonify({"error":  "Invalid request body was passed"}), 609
+    if method == 'EquipmentCondition.Create' :
+        
+        return simple_create(data)
+    elif method == 'EquipmentCondition.Delete':
+        return simple_delete(data)
+    elif method == 'RepairAct.Create':
+        return accident_create(data)
+    elif method == accident_delete(data):
+        return accident_delete(data)
+    else:
+        return jsonify({"error": "Invalid request body was passed"}), 609
 
 
 def accident_create(data):
