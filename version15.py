@@ -24,11 +24,11 @@ def router():
     try:
         method = data_json['method']
     except:
-        return jsonify({"error": "Invalid request body was passed1"}), 609
+        return jsonify({"error": "The method is missing"}), 609
     try:
         data= data_json.get('data',{})
     except:
-        return jsonify({"error": "Invalid request body was passed2"}), 609
+        return jsonify({"error": "The method is missing"}), 609
     if auths['login']!= 'RMR'  or auths['password']!='RMRPASS':
         return jsonify({"error":"Invalid authentication"}),611
 
@@ -49,55 +49,55 @@ def accident_create(data):
     try:
         code = data['code']
     except:
-        return jsonify({"error": "There is no hardware code"}), 601
+        return jsonify({"error": "The code of equipment is missing"}), 601
     try:
         ts_start = data['ts_start']
     except:
-        return jsonify({"error": "There is no hardware ts_start"}), 602
+        return jsonify({"error": "The start timestamp is missing"}), 602
     try:
         ts_end = data['ts_end']
     except:
-        return jsonify({"error": "There is no hardware ts_end"}), 603
+        return jsonify({"error": "The end timestamp is missing"}), 603
     try:
         status_id = data['status']
     except:
-        return jsonify({"error": "There is no hardware state"}), 604
+        return jsonify({"error": "The equipment condition is missing"}), 604
     try:
         number= data['doc_number']
     except:
-        return jsonify({"error": "There is no hardware doc_number"}), 605
+        return jsonify({"error": "The document number is missing"}), 605
 
     cursor.execute('''select id from EQUIP where code = %s''',[code])
     id = cursor.fetchall()
     if len(id) == 0:
-        return jsonify({"error": "There is no hardware with this code"}), 606
+        return jsonify({"error": "The equipment with the required code was not found"}), 606
     id = id[0][0]
     cursor.execute('select * from accident_table  where doc_number = %s',[number])
     num = cursor.fetchall()
     if len(num) == 0:
         cursor.execute('''insert into accident_table  values(%s,%s,%s,%s,%s)''', [id,ts_start,ts_end,status_id,number])
         connection.commit()
-        return  jsonify({"success": "An entry has been added"}), 701
+        return  jsonify({"success": "The record has been added"}), 701
     else:
         cursor.execute('''update accident_table  set id= %s,ts_start =%s,ts_end=%s,status_id = %s where doc_number = %s''',[code,ts_start,ts_end,status_id,number])
         connection.commit()
-        return jsonify({"success": "An entry has been updated"}), 702
+        return jsonify({"success": "The record has been updated"}), 702
 
 
 def accident_delete(data):
     try:
         number= data['doc_number']
     except:
-        return jsonify({"error": "There is no hardware doc_number"}), 605
+        return jsonify({"error": "The document number is missing"}), 605
     cursor.execute('''select * from accident_table  where doc_number = %s''',[number])
 
 
     if len(cursor.fetchall())==0:
-        return jsonify({"error": "there is no document with this number"}), 607
+        return jsonify({"error": "The unknown document number"}), 607
     else:
         cursor.execute('''delete from accident_table where doc_number = %s''',[number])
         connection.commit()
-        return jsonify({"success": "the record has been deleted"}), 701
+        return jsonify({"success": "The record has been deleted"}), 701
 
 
 
@@ -105,27 +105,27 @@ def simple_create(data):
     try:
         code = data['code']
     except:
-        return jsonify({"error": "There is no hardware code"}), 601
+        return jsonify({"error": "The code of equipment is missing"}), 601
     try:
         ts_start = data['ts_start']
     except:
-        return jsonify({"error": "There is no hardware ts_start"}), 602
+        return jsonify({"error": "The start timestamp is missing"}), 602
     try:
         status_id = data['status']
     except:
-        return jsonify({"error": "There is no hardware state"}), 604
+        return jsonify({"error": "The equipment condition is missing"}), 604
     try:
         number= data['doc_number']
     except:
-        return jsonify({"error": "There is no hardware doc_number"}), 605
+        return jsonify({"error": "The document number is missing"}), 605
 
     try:
         cursor.execute('''select id from EQUIP where code = %s''',[code])
         id = cursor.fetchall()
         if len(id) ==0:
-            return jsonify({"error": "There is no hardware with this code"}), 606
+            return jsonify({"error": "The equipment with the required code was not found"}), 606
     except:
-        return jsonify({"error": "There is no hardware with this code"}), 606
+        return jsonify({"error": "The equipment with the required code was not found"}), 606
     id = id[0][0]
        # Получение текущего времени
     current_time = datetime.datetime.now()
@@ -136,7 +136,7 @@ def simple_create(data):
     elif status_id == "000000002":
         status_id = 3
     else:
-        return jsonify({"error":"There is no hardware state2"}),604
+        return jsonify({"error":"The unknown equipment condition"}),60
 
     # Вычитание двух дней из текущего времени
     two_days_ago = current_time - datetime.timedelta(days=2)
@@ -144,7 +144,7 @@ def simple_create(data):
     date_object = datetime.datetime.strptime(ts_start, date_format)
     # Сравнение времени
     if date_object < two_days_ago:
-        return jsonify({"error": "The recording time is too old"}), 610
+        return jsonify({"error": "The time limit for modifying the record has expired"}), 610
 
 
     cursor.execute('''DELETE FROM The_dump_of_requests
@@ -266,20 +266,20 @@ def simple_create(data):
             sql = f"INSERT INTO {table_name} (equipment_id, start_time ,end_time, state_id, basis_document_number) VALUES (%s, %s, %s,%s, %s)"
             cursor.executemany(sql, new_results)
             connection.commit()
-            return jsonify({"success": "An entry has been added"}), 701
+            return jsonify({"success": "The record has been added"}), 701
     connection.commit()
-    return jsonify({"success": "An entry has been added"}), 701
+    return jsonify({"success": "The record has been added"}), 701
 
 
 def simple_delete(data):
     try:
         number= data['doc_number']
     except:
-        return jsonify({"error": "There is no hardware doc_number"}), 605
+        return jsonify({"error": The document number is missing"}), 605
     cursor.execute('''select equipment_id from The_dump_of_requests where basis_document_number = %s ''',[number])
     id = cursor.fetchall()
     if len(id) == 0:
-        return jsonify({"error":  "There is no document with this number"}), 607
+        return jsonify({"error":  "The unknown document number"}), 607
     else:
         id = id[0][0]
         cursor.execute('''DELETE FROM The_dump_of_requests
@@ -303,7 +303,7 @@ def simple_delete(data):
         sql = f"INSERT INTO {table_name} (equipment_id, start_time ,end_time, state_id, basis_document_number) VALUES (%s, %s, %s,%s, %s)"
         cursor.executemany(sql, new_results)
         connection.commit()
-        return jsonify({"success": "the record has been deleted"}), 703
+        return jsonify({"success": "The record has been deleted"}), 703
 
 
 
