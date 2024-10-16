@@ -6,4 +6,4 @@ def success702():
     return jsonify({"success": "The record has been updated"}), 702
 
 def success703():
-    jsonify({"success": "The record has been deleted"}), 703
+    return jsonify({"success": "The record has been deleted"}), 703
