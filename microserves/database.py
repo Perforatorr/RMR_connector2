@@ -108,7 +108,7 @@ def upd_accident(code,ts_start,ts_end,number):
     """Обновляет запись в accident_table."""
     with closing(get_connection()) as connection:
         with connection.cursor() as cursor:
-            cursor.execute('''update accident_table  set id= %s,ts_start =%s,ts_end=%s where doc_number = %s''',[code,ts_start,ts_end,number])
+            cursor.execute('''update accident_table  set code= %s,ts_start =%s,ts_end=%s where doc_number = %s''',[code,ts_start,ts_end,number])
             connection.commit()
 
 def del_accident_num(number):
