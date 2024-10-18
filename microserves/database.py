@@ -1,13 +1,12 @@
-import datetime 
+import datetime
 import pymysql
-
 
 from contextlib import closing
 
 def get_connection():
     """Создаёт и возвращает новое соединение с базой данных."""
     return pymysql.connect(
-        host='127.0.0.1', 
+        host='127.0.0.1',
         port = 3306,    # Замените на имя вашей базы данных
         user='root_rmr1',     # Замените на имя пользователя
         password='rmrpass!1',  # Замените на пароль
