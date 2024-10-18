@@ -146,3 +146,22 @@ def up_dump_equip(id, ts_start, status_id, number):
                         WHERE basis_document_number = %s''',
                         [id, ts_start, status_id, number])
             connection.commit()
+
+def sel_oper_date(date,id):
+    """получает наработку за период указанные период времени по id"""
+    with closing(get_connection()) as connection:
+        with connection.cursor() as cursor:
+            current_time = datetime.datetime.now()
+            two_days_ago = current_time - datetime.timedelta(days=2)
+            date_format = "%Y-%m-%d %H:%M:%S"
+            date_object = datetime.datetime.strptime(date, date_format)
+            if date_object < two_days_ago:
+                return 'timestamp invalid'
+            cursor.execute('''select * from operating%s where ts_start > %s'''[int(id),date_format])
+            operating = cursor.fetchall()
+            count=0
+
+            for i in operating:
+                count+= i[1]
+
+            return count
