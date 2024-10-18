@@ -57,7 +57,7 @@ def accident_create(data):
     if len(id) == 0:
         return error606()
     id = id[0][0]
-    
+
     num = sel_accid_num(number)
     if len(num) == 0:
         in_accident(id,ts_start,ts_end,number)
@@ -77,7 +77,7 @@ def accident_delete(data):
         return error607()
     else:
         del_accident_num(number)
-        return success701()
+        return success703()
 
 
 def simple_create(data):
@@ -116,7 +116,7 @@ def simple_create(data):
     # Сравнение времени
     if date_object < two_days_ago:
         return error610()
-    
+
     del_Dump_48()
     another_id = sel_equip_dump_num(number)
 
@@ -142,7 +142,7 @@ def simple_create(data):
             #44444
             Up_In(id)
             return success701()
-    
+
     return success701()
 
 
@@ -151,7 +151,7 @@ def simple_delete(data):
         number= data['doc_number']
     except:
         return error605()
-    
+
     id = sel_equip_dump_num(number)
     if len(id) == 0:
         return error607()
