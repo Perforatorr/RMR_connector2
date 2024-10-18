@@ -162,6 +162,32 @@ def simple_delete(data):
         Up_In(id)
         return success703()
 
+
+def OperatingTime_Get(data):
+    data_new = []
+    data_error = []
+    for i in data:
+        code = i['code']
+        ts_start = i['ts_start']
+        id = sel_EQUIP_code(code)
+        if len(id) == 0:
+            operating = "The code of equipment is missing or incorrect"
+            data_error.append({'code': code,'description':operating})
+        else:
+
+            operating = sel_oper_date(id,ts_start)
+            if operating == 'timestamp invalid':
+                data_error.append({'code': code,'description':operating})
+            else:
+                data_new.append({'code': code,'value':operating})
+        
+    original_url = request.url
+    if len(data_error)== 0:
+        response = requests.post(original_url, json={'data':data_new})
+    else:
+        response = requests.post(original_url, json={'data':data_new, 'error':data_error})
+    return jsonify(response.json())
+
     #словарь функций
 methods_dict = {'EquipmentCondition.Create':simple_create,'EquipmentCondition.Delete':simple_delete,'RepairAct.Create':accident_create,'RepairAct.Delete':accident_delete}
 if __name__ == '__main__':
