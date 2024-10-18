@@ -19,16 +19,23 @@ def router():
         auths = data_json.get('auth',{})
     except:
         return error611()
+    if auths['login']!= 'RMR'  or auths['password']!='RMRPASS':
+        return error611()
     try:
         method = data_json['method']
     except:
         return error609()
-    try:
-        data= data_json.get('data',{})
-    except:
-        return error609()
-    if auths['login']!= 'RMR'  or auths['password']!='RMRPASS':
-        return error611()
+    
+    if method == "OperatingTime.Get":
+        try:
+            data= data_json.get('data',[])
+        except:
+            return error609()
+    else:
+        try:
+            data= data_json.get('data',{})
+        except:
+            return error609()
     #проверка вхождения значание из ключа метод в словарь функций и вызов функции по ключу, если он есть
     if method in methods_dict:
         return methods_dict[method](data)
@@ -189,6 +196,6 @@ def OperatingTime_Get(data):
     return jsonify(response.json())
 
     #словарь функций
-methods_dict = {'EquipmentCondition.Create':simple_create,'EquipmentCondition.Delete':simple_delete,'RepairAct.Create':accident_create,'RepairAct.Delete':accident_delete}
+methods_dict = {'EquipmentCondition.Create':simple_create,'EquipmentCondition.Delete':simple_delete,'RepairAct.Create':accident_create,'RepairAct.Delete':accident_delete,"OperatingTime.Get":OperatingTime_Get}
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)
