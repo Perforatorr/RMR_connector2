@@ -12,6 +12,7 @@ status_dict = {'000000001':2,'000000003':1,'000000002':3}
 date_format = "%Y-%m-%d %H:%M:%S"
 
 
+
 @app.route('/api', methods=['POST'])
 def router():
     data_json = request.json
@@ -25,7 +26,7 @@ def router():
         method = data_json['method']
     except:
         return error609()
-    
+
     if method == "OperatingTime.Get":
         try:
             data= data_json.get('data',[])
@@ -169,7 +170,6 @@ def simple_delete(data):
         Up_In(id)
         return success703()
 
-
 def OperatingTime_Get(data):
     data_new = []
     data_error = []
@@ -181,21 +181,21 @@ def OperatingTime_Get(data):
             operating = "The code of equipment is missing or incorrect"
             data_error.append({'code': code,'description':operating})
         else:
-
-            operating = sel_oper_date(id,ts_start)
+            id =id[0][0]
+            operating = round(sel_oper_date(ts_start,id)/3600000,2)
             if operating == 'timestamp invalid':
                 data_error.append({'code': code,'description':operating})
             else:
                 data_new.append({'code': code,'value':operating})
-        
+
     original_url = request.url
     if len(data_error)== 0:
-        response = requests.post(original_url, json={'data':data_new})
+        response= jsonify({'data':data_new})
     else:
-        response = requests.post(original_url, json={'data':data_new, 'error':data_error})
-    return jsonify(response.json())
+        response = jsonify({'data':data_new, 'error':data_error})
+    return response
 
     #словарь функций
 methods_dict = {'EquipmentCondition.Create':simple_create,'EquipmentCondition.Delete':simple_delete,'RepairAct.Create':accident_create,'RepairAct.Delete':accident_delete,"OperatingTime.Get":OperatingTime_Get}
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000,debug=True)
+  app.run(host='0.0.0.0', port=5001,debug=True)
