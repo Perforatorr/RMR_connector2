@@ -198,4 +198,4 @@ def OperatingTime_Get(data):
     #словарь функций
 methods_dict = {'EquipmentCondition.Create':simple_create,'EquipmentCondition.Delete':simple_delete,'RepairAct.Create':accident_create,'RepairAct.Delete':accident_delete,"OperatingTime.Get":OperatingTime_Get}
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5001,debug=True)
+  app.run(host='0.0.0.0', port=5000,debug=True)
