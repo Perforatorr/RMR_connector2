@@ -155,9 +155,9 @@ def sel_oper_date(date,id):
             two_days_ago = current_time - datetime.timedelta(days=2)
             date_format = "%Y-%m-%d %H:%M:%S"
             date_object = datetime.datetime.strptime(date, date_format)
-            if date_object < two_days_ago:
+            if date_object >= two_days_ago:
                 return 'timestamp invalid'
-            cursor.execute('''select * from operating%s where ts_start > %s'''[int(id),date_format])
+            cursor.execute('''select * from operating_time%s where ts > %s''',[int(id),date_format])
             operating = cursor.fetchall()
             count=0
 
